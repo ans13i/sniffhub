@@ -29,7 +29,6 @@ class Dog {
     int age;
     Owner owner;                     // 이 강아지의 보호자
 
-    // test11234
     Dog(String name, int age, String size, String breed, Owner owner, String klass) {
         this.name = name; this.age = age; this.size = size; this.breed = breed;
         this.owner = owner; this.klass = klass;
