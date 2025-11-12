@@ -1,6 +1,7 @@
 package com.sniffhub.view;
 
 import com.sniffhub.model.DogManagementModel;
+import com.sniffhub.sqlite.DBUtil;
 
 import javax.swing.*;
 
@@ -36,6 +37,8 @@ public class Main extends JFrame {
 
     // 프로젝트 실행
     public static void main(String[] args) {
+        // SQLite DB 초기화
+        DBUtil.initDatabase();
         SwingUtilities.invokeLater(() -> new Main().setVisible(true));
     }
 }
