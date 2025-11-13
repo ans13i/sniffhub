@@ -25,16 +25,17 @@ public class SearchFrame extends JFrame {
         setLayout(new BorderLayout(10,10));
 
         // TABLE에 표시할 데이터
-        String[] columns = {"이름", "나이", "반", "크기", "품종"};
+        String[] columns = {"보호자 이름", "강아지 이름", "나이", "반", "크기", "품종"};
         Object[][] data = new Object[filteredDogs.size()][columns.length];
 
         for (int i = 0; i < filteredDogs.size(); i++) {
             Dog d = filteredDogs.get(i);
-            data[i][0] = d.getName();
-            data[i][1] = d.getAge();
-            data[i][2] = d.getKlass();
-            data[i][3] = d.getSize();
-            data[i][4] = d.getBreed();
+            data[i][0] = d.getOwner().getName();
+            data[i][1] = d.getName();
+            data[i][2] = d.getAge();
+            data[i][3] = d.getKlass();
+            data[i][4] = d.getSize();
+            data[i][5] = d.getBreed();
         }
 
         // JTable 모델 생성 및 스크롤 패널에 추가
