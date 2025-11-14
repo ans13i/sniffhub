@@ -43,5 +43,12 @@ public class MainMenuBtnPanel extends JPanel {
                 new SearchFrame(filteredDogs, q.trim()).setVisible(true);
             }
         });
+
+        // 출석 관리 버튼 클릭 시
+        btnAttend.addActionListener(e-> {
+            app.setContentPane(new AttendanceMenuPanel(app, model));
+            app.revalidate();
+            app.repaint();
+        });
     }
 }

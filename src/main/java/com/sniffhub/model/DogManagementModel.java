@@ -4,7 +4,6 @@ import com.sniffhub.sqlite.dao.DogDAO;
 import com.sniffhub.sqlite.dao.OwnerDAO;
 
 import java.util.ArrayList;
-import java.util.List;
 
 // 강아지 유치원 관리 DogManagementModel Class
 public class DogManagementModel {
@@ -61,5 +60,27 @@ public class DogManagementModel {
     // 모든 보호자 리스트
     public ArrayList<Owner> getAllOwners() {
         return ownerDAO.findAllOwner();
+    }
+
+    // 해당 반의 강아지 리스트
+    public ArrayList<Dog> getDogsByKlass(String klass) {
+        // @TODO: 예) 사회화반 강아지만 찾도록 요청
+        // @TODO: dogDAO에 findDogsByKlass(String klass) 만들어야 함
+
+        // 임시로 만듦
+        ArrayList<Dog> allDogs = this.getAllDogs();
+        ArrayList<Dog> klassDogs = new ArrayList<>();
+
+        for(Dog d : allDogs){
+            if(d.getKlass().equals(klass)){
+                klassDogs.add(d);
+            }
+        }
+        return klassDogs;
+    }
+
+    // 해당 반의 출석 여부, 식사 여부, 훈련 참여도 수정 후 저장
+    public void saveAttendanceData(ArrayList<DogAttendance> attendanceRecordToSave) {
+        // @TODO: dogAttendanceDAO UPDATE
     }
 }
