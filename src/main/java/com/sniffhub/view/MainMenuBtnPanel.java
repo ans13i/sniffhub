@@ -1,5 +1,6 @@
 package com.sniffhub.view;
 
+import com.sniffhub.controller.SearchController;
 import com.sniffhub.model.Dog;
 import com.sniffhub.model.DogManagementModel;
 
@@ -39,7 +40,6 @@ public class MainMenuBtnPanel extends JPanel {
             if (q != null && !q.trim().isEmpty()) {
                 // model의 검색 로직을 호출하여 결과를 받음
                 ArrayList<Dog> filteredDogs = model.filterDogsByOwner(q.trim());
-                // 검색 결과 창에 model이 필터링한 리스트 표시
                 new SearchFrame(filteredDogs, q.trim()).setVisible(true);
             }
         });

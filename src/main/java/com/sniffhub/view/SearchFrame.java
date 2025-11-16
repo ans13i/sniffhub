@@ -144,7 +144,7 @@ public class SearchFrame extends JFrame {
         );
 
         if (result == JOptionPane.OK_OPTION) {
-            // 나이는 정수만 허용
+            // 나이는 정수만
             String ageInput = tfAge.getText().trim();
             int newAge;
             try {
