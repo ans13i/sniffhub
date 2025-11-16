@@ -10,20 +10,37 @@ import java.util.ArrayList;
 public class AttendanceMenuPanel extends JPanel {
 
     public AttendanceMenuPanel(Main app, DogManagementModel model){
-        setLayout(new GridLayout(4, 1, 10, 10));
-        setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
+        setLayout(new BorderLayout());
 
         JLabel title = new JLabel("반을 클릭 후 출석 관리", SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 18));
-        add(title);
+        add(title, BorderLayout.NORTH);
+
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1, 10, 10));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(40, 100, 40, 100));
 
         JButton btnSocial = new JButton("사회반");
         JButton btnPlay   = new JButton("놀이반");
         JButton btnEdu    = new JButton("교육반");
 
-        add(btnSocial);
-        add(btnPlay);
-        add(btnEdu);
+        centerPanel.add(btnSocial);
+        centerPanel.add(btnPlay);
+        centerPanel.add(btnEdu);
+
+        // 뒤로가기 버튼 추가
+        JButton btnBack = new JButton("뒤로가기");
+        btnBack.setFont(new Font("SansSerif", Font.BOLD, 11));
+        btnBack.setFocusable(false);
+
+        btnBack.addActionListener(e -> {
+            app.setContentPane(new MainMenuBtnPanel(app, model));
+            app.revalidate();
+            app.repaint();
+        });
+
+        centerPanel.add(btnBack);
+
+        add(centerPanel, BorderLayout.CENTER);
 
         // 사회반 버튼 클릭
         btnSocial.addActionListener(e -> openKlassList(app, model, "사회반"));
@@ -39,7 +56,6 @@ public class AttendanceMenuPanel extends JPanel {
     private void openKlassList(Main app, DogManagementModel model, String klass) {
         ArrayList<Dog> klassDogs = model.getDogsByKlass(klass);
 
-        // 해당 반의 속한 강아지 출석 화면
         AttendanceKlassListDialog dialog = new AttendanceKlassListDialog(app, klassDogs, klass);
         dialog.setModal(true);
         dialog.setVisible(true);

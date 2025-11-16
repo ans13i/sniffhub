@@ -16,5 +16,7 @@ CREATE TABLE IF NOT EXISTS dog (
     breed TEXT,                               -- 품종
     klass TEXT,                               -- 반 이름 (사회반 / 놀이반 / 교육반)
     owner_id INTEGER,                         -- 보호자 ID (FK)
-    del_yn TEXT DEFAULT 'N'                  -- 삭제 여부 ('Y' 또는 'N')
+    del_yn TEXT DEFAULT 'N'
+
+                      -- 삭제 여부 ('Y' 또는 'N')
 );
