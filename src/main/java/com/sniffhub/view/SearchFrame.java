@@ -1,6 +1,8 @@
 package com.sniffhub.view;
 
+import com.sniffhub.controller.SearchController;
 import com.sniffhub.model.Dog;
+import com.sniffhub.model.DogManagementModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +25,9 @@ public class SearchFrame extends JFrame {
     private JTable table;                  // 테이블
     private DefaultTableModel tableModel;  // 테이블 모델
 
-    public SearchFrame(ArrayList<Dog> filteredDogs, String ownerQuery) {
+    private SearchController controller;
+
+    public SearchFrame(ArrayList<Dog> filteredDogs, String ownerQuery, DogManagementModel model) {
 
         this.filteredDogs = filteredDogs;
 
@@ -61,8 +65,8 @@ public class SearchFrame extends JFrame {
         table = new JTable(tableModel);
 
         // 스크롤 패널에 추가
-        JScrollPane scroll = new JScrollPane(table);
-        add(scroll, BorderLayout.CENTER);
+        this.controller = new SearchController(model, this.filteredDogs, this.tableModel, this);
+        add(new JScrollPane(table), BorderLayout.CENTER);
 
         // 삭제, 수정
         table.addMouseListener(new MouseAdapter() {
@@ -85,93 +89,15 @@ public class SearchFrame extends JFrame {
                     );
 
                     if (result == JOptionPane.YES_OPTION) {
-                        deleteRow(row);
+                        controller.deleteDog(row);
                     }
                 }
 
                 // 2) "삭제" 칼럼이 아닌 칸을 더블클릭 → 그 행 전체 수정
                 if (e.getClickCount() == 2 && col != lastCol) {
-                    editRow(row);
+                    controller.editDog(row);
                 }
             }
         });
-    }
-
-    //  행 삭제
-    private void deleteRow(int row) {
-        filteredDogs.remove(row);      // 메모리 상 검색 결과에서도 제거
-        tableModel.removeRow(row);     // 화면 테이블에서 제거
-    }
-
-    // 행 전체 수정 (더블클릭 하면 됨)
-    private void editRow(int row) {
-        // 현재 값들 가져오기
-        String ownerName = String.valueOf(tableModel.getValueAt(row, 0));
-        String dogName   = String.valueOf(tableModel.getValueAt(row, 1));
-        String ageStr    = String.valueOf(tableModel.getValueAt(row, 2));
-        String klass     = String.valueOf(tableModel.getValueAt(row, 3));
-        String size      = String.valueOf(tableModel.getValueAt(row, 4));
-        String breed     = String.valueOf(tableModel.getValueAt(row, 5));
-
-        // 입력 폼 만들기 (JOptionPane에 넣을 패널)
-        JTextField tfOwner = new JTextField(ownerName);
-        JTextField tfDog   = new JTextField(dogName);
-        JTextField tfAge   = new JTextField(ageStr);
-        JTextField tfKlass = new JTextField(klass);
-        JTextField tfSize  = new JTextField(size);
-        JTextField tfBreed = new JTextField(breed);
-
-        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
-        panel.add(new JLabel("보호자 이름"));
-        panel.add(tfOwner);
-        panel.add(new JLabel("강아지 이름"));
-        panel.add(tfDog);
-        panel.add(new JLabel("나이"));
-        panel.add(tfAge);
-        panel.add(new JLabel("반"));
-        panel.add(tfKlass);
-        panel.add(new JLabel("크기"));
-        panel.add(tfSize);
-        panel.add(new JLabel("품종"));
-        panel.add(tfBreed);
-
-        int result = JOptionPane.showConfirmDialog(
-                this,
-                panel,
-                "강아지 정보 수정",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
-        );
-
-        if (result == JOptionPane.OK_OPTION) {
-            // 나이는 정수만
-            String ageInput = tfAge.getText().trim();
-            int newAge;
-            try {
-                newAge = Integer.parseInt(ageInput);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "나이는 숫자로 입력하세요.",
-                        "입력 오류",
-                        JOptionPane.ERROR_MESSAGE
-                );
-                return;
-            }
-
-            String newOwnerName = tfOwner.getText().trim();
-            String newDogName   = tfDog.getText().trim();
-            String newKlass     = tfKlass.getText().trim();
-            String newSize      = tfSize.getText().trim();
-            String newBreed     = tfBreed.getText().trim();
-
-            // 테이블에 값 반영
-            tableModel.setValueAt(newOwnerName, row, 0);
-            tableModel.setValueAt(newDogName,   row, 1);
-            tableModel.setValueAt(newAge,       row, 2);
-            tableModel.setValueAt(newKlass,     row, 3);
-            tableModel.setValueAt(newSize,      row, 4);
-            tableModel.setValueAt(newBreed,     row, 5);
-        }
     }
 }

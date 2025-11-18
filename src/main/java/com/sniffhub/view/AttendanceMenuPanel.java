@@ -32,11 +32,8 @@ public class AttendanceMenuPanel extends JPanel {
         btnBack.setFont(new Font("SansSerif", Font.BOLD, 11));
         btnBack.setFocusable(false);
 
-        btnBack.addActionListener(e -> {
-            app.setContentPane(new MainMenuBtnPanel(app, model));
-            app.revalidate();
-            app.repaint();
-        });
+        // 뒤로가기 버튼 추가 - view만
+        btnBack.addActionListener(e-> app.switchToMainMenu());
 
         centerPanel.add(btnBack);
 

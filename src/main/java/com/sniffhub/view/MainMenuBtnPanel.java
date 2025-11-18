@@ -40,7 +40,7 @@ public class MainMenuBtnPanel extends JPanel {
             if (q != null && !q.trim().isEmpty()) {
                 // model의 검색 로직을 호출하여 결과를 받음
                 ArrayList<Dog> filteredDogs = model.filterDogsByOwner(q.trim());
-                new SearchFrame(filteredDogs, q.trim()).setVisible(true);
+                new SearchFrame(filteredDogs, q.trim(), model).setVisible(true);
             }
         });
 

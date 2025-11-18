@@ -64,7 +64,7 @@ public class DogManagementModel {
 
     // 해당 반의 강아지 리스트
     public ArrayList<Dog> getDogsByKlass(String klass) {
-        // @TODO: 예) 사회화반 강아지만 찾도록 요청
+        // @TODO: 예) 사회화반 강아지만 찾도록 요청 WHERE
         // @TODO: dogDAO에 findDogsByKlass(String klass) 만들어야 함
 
         // 임시로 만듦
@@ -82,5 +82,15 @@ public class DogManagementModel {
     // 해당 반의 출석 여부, 식사 여부, 훈련 참여도 수정 후 저장
     public void saveAttendanceData(ArrayList<DogAttendance> attendanceRecordToSave) {
         // @TODO: dogAttendanceDAO UPDATE
+    }
+
+    // 강아지 삭제
+    public void deleteDog(Dog dogDelete) {
+        // @TODO  dogDAO에 deleteDogById 만들어야 할 것 같기두...합니다
+    }
+
+    // 강아지 수정
+    public void updateDog(Dog dogUpdate, String newOwnerName, String newDogName, int newAge, String newKlass, String newSize, String newBread) {
+        // @TODO dogDAO UPDATE
     }
 }
