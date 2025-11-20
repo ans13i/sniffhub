@@ -40,9 +40,16 @@ public class AttendanceKlassListDialog extends JDialog {
             data[i][2] = d.getAge();
             data[i][3] = d.getSize();
             data[i][4] = d.getBreed();
-            data[i][5] = false;         // 출석 여부
-            data[i][6] = false;         // 식사 여부
-            data[i][7] = "normal";      // 훈련 참여도
+            // 출석여부,식사여부,훈련 참여도 DB 정보 존재 시 설정값 미존재 시 기본값 설정
+            if (d.getAttendance() != null) {
+                data[i][5] = d.getAttendance().isPresent();          // 출석 여부
+                data[i][6] = d.getAttendance().getAteMeal();         // 식사 여부
+                data[i][7] = d.getAttendance().getTrainingLevel();   // 훈련 참여도
+            } else {
+                data[i][5] = false;      // 기본값
+                data[i][6] = false;      // 기본값
+                data[i][7] = "normal";   // 기본값
+            }
         }
 
         // 커스텀 TableModel 생성 (체크박스를 위해)

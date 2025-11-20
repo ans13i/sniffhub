@@ -1,5 +1,6 @@
 package com.sniffhub.model;
 
+import com.sniffhub.sqlite.dao.DogAttendanceDAO;
 import com.sniffhub.sqlite.dao.DogDAO;
 import com.sniffhub.sqlite.dao.OwnerDAO;
 
@@ -12,6 +13,8 @@ public class DogManagementModel {
     private final OwnerDAO ownerDAO = new OwnerDAO();
     // 강아지 DAO
     private final DogDAO dogDAO = new DogDAO();
+    // 강아지 출석 DAO
+    private final DogAttendanceDAO dogAttendanceDAO = new DogAttendanceDAO();
 
     // 나이를 기준으로 한 강아지 반 배정
     public String assignClassByAge(int age) {
@@ -49,48 +52,39 @@ public class DogManagementModel {
 
     // 보호자 이름으로 검색 시 강아지 리스트
     public ArrayList<Dog> filterDogsByOwner(String ownerQuery) {
+        // 검색조건 강아지 리스트 DB 조회
         return dogDAO.findDogByOwnerName(ownerQuery);
-    }
-
-    // 모든 강아지 리스트
-    public ArrayList<Dog> getAllDogs() {
-        return dogDAO.findAllDogs();
-    }
-
-    // 모든 보호자 리스트
-    public ArrayList<Owner> getAllOwners() {
-        return ownerDAO.findAllOwner();
     }
 
     // 해당 반의 강아지 리스트
     public ArrayList<Dog> getDogsByKlass(String klass) {
-        // @TODO: 예) 사회화반 강아지만 찾도록 요청 WHERE
-        // @TODO: dogDAO에 findDogsByKlass(String klass) 만들어야 함
-
-        // 임시로 만듦
-        ArrayList<Dog> allDogs = this.getAllDogs();
-        ArrayList<Dog> klassDogs = new ArrayList<>();
-
-        for(Dog d : allDogs){
-            if(d.getKlass().equals(klass)){
-                klassDogs.add(d);
-            }
-        }
-        return klassDogs;
+        // 검색조건 강아지 리스트 DB 조회
+        return dogDAO.findDogsByKlass(klass);
     }
 
     // 해당 반의 출석 여부, 식사 여부, 훈련 참여도 수정 후 저장
     public void saveAttendanceData(ArrayList<DogAttendance> attendanceRecordToSave) {
-        // @TODO: dogAttendanceDAO UPDATE
+        // 리스트 반복 DB 저장
+        for (DogAttendance dogAttendance : attendanceRecordToSave) {
+            // 출석 존재여부 확인
+            // 출석 미존재 시 신규 등록, 존재 시 수정
+            if (dogAttendanceDAO.existsAttendance(dogAttendance)) {
+                dogAttendanceDAO.updateAttendance(dogAttendance);
+            } else {
+                dogAttendanceDAO.insertAttendance(dogAttendance);
+            }
+        }
     }
 
     // 강아지 삭제
-    public void deleteDog(Dog dogDelete) {
-        // @TODO  dogDAO에 deleteDogById 만들어야 할 것 같기두...합니다
+    public void deleteDog(int dogId) {
+        // 강아지 DB 논리삭제
+        dogDAO.deleteDogById(dogId);
     }
 
     // 강아지 수정
-    public void updateDog(Dog dogUpdate, String newOwnerName, String newDogName, int newAge, String newKlass, String newSize, String newBread) {
-        // @TODO dogDAO UPDATE
+    public void updateDog(Dog dog) {
+        // 강아지 DB 수정
+        dogDAO.updateDog(dog);
     }
 }

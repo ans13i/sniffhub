@@ -1,6 +1,7 @@
 package com.sniffhub.sqlite.dao;
 
 import com.sniffhub.model.Dog;
+import com.sniffhub.model.DogAttendance;
 import com.sniffhub.model.Owner;
 import com.sniffhub.sqlite.DBUtil;
 
@@ -64,6 +65,7 @@ public class DogDAO {
                         rs.getString("owner_phone")
                 );
                 dogs.add(new Dog(
+                        rs.getInt("id"),
                         rs.getString("name"),
                         rs.getInt("age"),
                         rs.getString("size"),
@@ -105,6 +107,7 @@ public class DogDAO {
                         rs.getString("owner_phone")
                 );
                 dogs.add(new Dog(
+                        rs.getInt("id"),
                         rs.getString("name"),
                         rs.getInt("age"),
                         rs.getString("size"),
@@ -117,6 +120,121 @@ public class DogDAO {
             System.err.println("보호자 이름으로 강아지 조회 실패: " + e.getMessage());
         }
         return dogs;
+    }
+
+    /**
+     * 배정 반으로 강아지 조회
+     * @param klass 배정 반
+     * @return 강아지 객체 리스트
+     */
+    public ArrayList<Dog> findDogsByKlass(String klass) {
+        ArrayList<Dog> dogs = new ArrayList<>();
+        String sql = """
+                SELECT d.*, 
+                       o.name AS owner_name, 
+                       o.address AS owner_address, 
+                       o.phone AS owner_phone,
+                       da.*
+                  FROM dog d
+            INNER JOIN owner o ON d.owner_id = o.id
+             LEFT JOIN dog_attendance da ON d.id = da.dog_id AND da.attendance_date = DATE('now','localtime')
+                 WHERE d.del_yn = 'N'
+                   AND d.klass = ?
+                """;
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, klass);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Owner owner = new Owner(
+                        rs.getString("owner_name"),
+                        rs.getString("owner_address"),
+                        rs.getString("owner_phone")
+                );
+
+                Dog dog = new Dog(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("age"),
+                        rs.getString("size"),
+                        rs.getString("breed"),
+                        rs.getString("klass"),
+                        owner
+                );
+
+                // 출석정보
+                boolean hasAttendance = rs.getString("attendance_date") != null;
+
+                if (hasAttendance) {
+                    DogAttendance attendance = new DogAttendance(
+                            dog,
+                            rs.getInt("is_present") == 1,
+                            rs.getInt("ate_meal") == 1,
+                            rs.getString("training_level"),
+                            rs.getString("attendance_date")
+                    );
+                    dog.setAttendance(attendance);
+                }
+                dogs.add(dog);
+            }
+
+        } catch (Exception e) {
+            System.err.println("반별 강아지 조회 실패: " + e.getMessage());
+        }
+        return dogs;
+    }
+
+    /**
+     * 강아지 삭제
+     * @param dogId 강아지 고유 아이디
+     */
+    public void deleteDogById(int dogId) {
+        String sql = "UPDATE dog SET del_yn = 'Y' WHERE id = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, dogId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.err.println("강아지 삭제 실패: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 강아지 수정
+     * @param dog 강아지 객체
+     */
+    public void updateDog(Dog dog) {
+        String sql = """
+                UPDATE dog
+                   SET name = ?, 
+                       age = ?, 
+                       size = ?, 
+                       breed = ?, 
+                       klass = ? 
+                 WHERE id = ?
+                """;
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, dog.getName());
+            ps.setInt(2, dog.getAge());
+            ps.setString(3, dog.getSize());
+            ps.setString(4, dog.getBreed());
+            ps.setString(5, dog.getKlass());
+            ps.setInt(6, dog.getId());
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.err.println("강아지 수정 실패: " + e.getMessage());
+        }
     }
 
 }

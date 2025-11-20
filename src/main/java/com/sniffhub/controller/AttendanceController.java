@@ -5,6 +5,7 @@ import com.sniffhub.model.Dog;
 import com.sniffhub.model.DogAttendance;
 
 import javax.swing.table.DefaultTableModel;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AttendanceController {
@@ -30,7 +31,7 @@ public class AttendanceController {
             String training   = (String) tableModel.getValueAt(i, 7);
 
             // DTO 객체로 만든 후 리스트에 추가
-            attendanceRecordToSave.add(new DogAttendance(dog, isPresent, ateMeal, training));
+            attendanceRecordToSave.add(new DogAttendance(dog, isPresent, ateMeal, training, LocalDate.now().toString()));
         }
 
         model.saveAttendanceData(attendanceRecordToSave);

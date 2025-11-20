@@ -30,8 +30,7 @@ public class SearchController {
     // 삭제 버튼 클릭 시 강아지 삭제
     public void deleteDog(int row) {
         Dog dogDelete = filteredDogs.get(row);
-
-        model.deleteDog(dogDelete);
+        model.deleteDog(dogDelete.getId());
         filteredDogs.remove(row);
         tableModel.removeRow(row);
     }
@@ -41,7 +40,6 @@ public class SearchController {
         Dog dogUpdate = filteredDogs.get(row);
 
         // 현재 값들 가져오기
-        String ownerName = String.valueOf(tableModel.getValueAt(row, 0));
         String dogName   = String.valueOf(tableModel.getValueAt(row, 1));
         String ageStr    = String.valueOf(tableModel.getValueAt(row, 2));
         String klass     = String.valueOf(tableModel.getValueAt(row, 3));
@@ -49,7 +47,6 @@ public class SearchController {
         String breed     = String.valueOf(tableModel.getValueAt(row, 5));
 
         // 입력 폼 만들기 (JOptionPane에 넣을 패널)
-        JTextField tfOwner = new JTextField(ownerName);
         JTextField tfDog   = new JTextField(dogName);
         JTextField tfAge   = new JTextField(ageStr);
         JTextField tfKlass = new JTextField(klass);
@@ -57,8 +54,6 @@ public class SearchController {
         JTextField tfBreed = new JTextField(breed);
 
         JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
-        panel.add(new JLabel("보호자 이름"));
-        panel.add(tfOwner);
         panel.add(new JLabel("강아지 이름"));
         panel.add(tfDog);
         panel.add(new JLabel("나이"));
@@ -94,15 +89,13 @@ public class SearchController {
                 return;
             }
 
-            String newOwnerName = tfOwner.getText().trim();
             String newDogName = tfDog.getText().trim();
             String newKlass = tfKlass.getText().trim();
             String newSize = tfSize.getText().trim();
             String newBreed = tfBreed.getText().trim();
 
-            model.updateDog(dogUpdate, newOwnerName, newDogName, newAge, newKlass, newSize, newBreed);
+            model.updateDog(new Dog(dogUpdate.getId(), newDogName, newAge, newSize, newBreed, newKlass, null));
 
-            tableModel.setValueAt(newOwnerName, row, 0);
             tableModel.setValueAt(newDogName, row, 1);
             tableModel.setValueAt(newAge, row, 2);
             tableModel.setValueAt(newKlass, row, 3);
