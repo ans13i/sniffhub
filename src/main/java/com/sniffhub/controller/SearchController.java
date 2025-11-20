@@ -49,8 +49,15 @@ public class SearchController {
         // 입력 폼 만들기 (JOptionPane에 넣을 패널)
         JTextField tfDog   = new JTextField(dogName);
         JTextField tfAge   = new JTextField(ageStr);
-        JTextField tfKlass = new JTextField(klass);
-        JTextField tfSize  = new JTextField(size);
+        String[] KlassOptions = {"놀이반", "교육반", "사회반"};
+        JComboBox<String> cbKlass = new JComboBox<>(KlassOptions);
+        cbKlass.setSelectedItem(klass);
+
+
+        String[] sizeOptions = {"소형견", "대형견"};
+        JComboBox<String> cbSize = new JComboBox<>(sizeOptions);
+        cbSize.setSelectedItem(size);
+
         JTextField tfBreed = new JTextField(breed);
 
         JPanel panel = new JPanel(new GridLayout(0, 2, 5, 5));
@@ -59,9 +66,9 @@ public class SearchController {
         panel.add(new JLabel("나이"));
         panel.add(tfAge);
         panel.add(new JLabel("반"));
-        panel.add(tfKlass);
+        panel.add(cbKlass);
         panel.add(new JLabel("크기"));
-        panel.add(tfSize);
+        panel.add(cbSize);
         panel.add(new JLabel("품종"));
         panel.add(tfBreed);
 
@@ -90,8 +97,8 @@ public class SearchController {
             }
 
             String newDogName = tfDog.getText().trim();
-            String newKlass = tfKlass.getText().trim();
-            String newSize = tfSize.getText().trim();
+            String newKlass = (String) cbKlass.getSelectedItem();
+            String newSize = (String) cbSize.getSelectedItem();
             String newBreed = tfBreed.getText().trim();
 
             model.updateDog(new Dog(dogUpdate.getId(), newDogName, newAge, newSize, newBreed, newKlass, null));
