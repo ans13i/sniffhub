@@ -15,7 +15,7 @@ public class Main extends JFrame {
     // 프레임 초기 화면
     public Main() {
         // 프레임(최상위 창) 기본 설정
-        setTitle("SniffHub 기본 버전");
+        setTitle("SniffHub");
         setSize(500, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
