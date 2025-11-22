@@ -1,5 +1,6 @@
 package com.sniffhub.sqlite.dao;
 
+import com.sniffhub.model.DogAttendance;
 import com.sniffhub.model.Owner;
 import com.sniffhub.sqlite.DBUtil;
 
@@ -90,5 +91,40 @@ public class OwnerDAO {
         return owners;
     }
 
+    /**
+     * 보호자 고유 아이디 조회
+     * @param name 보호자 이름
+     * @param address 보호자 주소
+     * @param phone 보호자 연락처
+     * @return 보호자 고유 아이디
+     */
+    public int getOwnerId(String name, String address, String phone) {
+        String sql = """
+                SELECT id
+                  FROM owner
+                 WHERE del_yn = 'N'
+                   AND name = ?
+                   AND address = ?
+                   AND phone = ?
+                LIMIT 1
+                """;
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, address);
+            ps.setString(3, phone);
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.getInt("id");
+
+        } catch (Exception e) {
+            System.err.println("보호자 존재 여부 조회 실패: " + e.getMessage());
+        }
+
+        return 0;
+    }
 
 }

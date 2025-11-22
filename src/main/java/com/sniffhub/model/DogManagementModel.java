@@ -28,22 +28,19 @@ public class DogManagementModel {
                            String dName, int dAge, String dSize, String dBreed) {
 
         // 1. 보호자 확인 또는 신규 생성
-        // 보호자 이름으로 보호자 조회
-        Owner owner = ownerDAO.findOwnerByName(oName);
-
-        // 보호자 미존재 시 신규 생성
-        int ownerId = 0;
-        if (owner == null) {
-            owner = new Owner(oName, oAddr, oPhone);
-            // 보호자 신규 생성
-            ownerId = ownerDAO.insertOwner(owner);
+        // 보호자 이름/주소/연락처로 보호자 고유 아이디 조회 (기등록 여부 확인)
+        int ownerId = ownerDAO.getOwnerId(oName, oAddr, oPhone);
+        // 보호자 미존재 시 신규 생성 (ownerId = 0)
+        if (ownerId == 0) {
+            Owner ownerParam = new Owner(oName, oAddr, oPhone);
+            ownerId = ownerDAO.insertOwner(ownerParam);
         }
 
         // 2. 나이 기준으로 반 배정
         String klass = assignClassByAge(dAge);
 
         // 3. Dog 객체 생성 및 저장소에 추가
-        Dog newDog = new Dog(dName, dAge, dSize, dBreed, klass, owner);
+        Dog newDog = new Dog(dName, dAge, dSize, dBreed, klass, null);
         // 강아지 신규 생성
         dogDAO.insertDog(newDog, ownerId);
 
